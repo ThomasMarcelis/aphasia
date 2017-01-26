@@ -14,6 +14,10 @@ class Quiz:
     def startNewQuiz(name):
         return Quiz(1, name, [], [])
 
+    @staticmethod
+    def getQuiz(quizId):
+        return Quiz(quizId, 'test', [], [])
+
     def getNewQuestion(self):
         return Question(1,'testtitle',['testanswer1', 'testanswer2'])
 
@@ -44,6 +48,13 @@ def newQuiz():
                 }
             }
     return jsonify(**answer)
+
+
+@app.route('/quiz/<int:quizId>/question/next', methods=['get'])
+def nextQuestion(quizId):
+    quiz = Quiz.getQuiz(quizId)
+    return jsonify(**quiz.getNewQuestion().toJson())
+
 
 
 
