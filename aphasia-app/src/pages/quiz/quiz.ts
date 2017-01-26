@@ -4,6 +4,7 @@ import {Quiz} from "../../models/quiz";
 import {Question} from "../../models/question";
 import {QuestionAssigner} from "../../providers/question-assigner";
 import {QuizAssigner} from "../../providers/quiz-assigner";
+import {HomePage} from "../home/home";
 
 /*
   Generated class for the QuizAssigner page.
@@ -31,7 +32,10 @@ export class QuizPage {
 
     this.questionAssigner.getNewQuestion(this.quiz.id).subscribe(
       question => this.question = question,
-      error => console.error("error getting quiz")
+      error => {
+        console.error(error);
+        this.navCtrl.push(HomePage);
+      }
     )
 
 
