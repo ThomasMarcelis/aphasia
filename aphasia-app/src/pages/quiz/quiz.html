@@ -17,4 +17,31 @@
 
   <h1>quiz: {{ quiz.id }}</h1>
 
+  <h2>Question: {{ question.title }}</h2>
+  <p>Question type: {{ question.type }}</p>
+
+
+
+  <ion-list [(ngModel)]="choice" radio-group>
+
+    <ion-item>
+      <ion-label>{{question.answer1}}</ion-label>
+      <ion-radio value="{{question.answer1}}">test</ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>{{question.answer2}}</ion-label>
+      <ion-radio value="{{question.answer2}}"></ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>{{question.answer3}}</ion-label>
+      <ion-radio value="{{question.answer3}}"></ion-radio>
+    </ion-item>
+
+
+  </ion-list>
+
+    <button ion-button large round (click)="submitAnswer()">Submit</button>
+
 </ion-content>

@@ -16,14 +16,26 @@ import { Observable }     from 'rxjs/Observable';
 export class QuizAssigner {
 
   private quizUrl = 'http://127.0.0.1:5000/quiz';
+  private questionUrl = '/question/';
 
   constructor(public http: Http) {}
 
   getNewQuiz(name: string): Observable<Quiz> {
-    var headers = new Headers();
+    let headers = new Headers();
     headers.append('Content-Type', 'application/x-www-form-urlencoded')
     return this.http.post(this.quizUrl, "name=" + name, { headers: headers})
       .map(response => <Quiz>response.json()["quiz"]);
+  }
+
+  sendQuizAnswer(quizId: number, questionId: number,answer: string) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/x-www-form-urlencoded');
+
+    let postUrl = this.quizUrl + '/' + quizId + '/question/' + questionId;
+
+    console.error(postUrl);
+
+    return this.http.post(postUrl, "answer=" + answer, { headers: headers});
   }
 
 
