@@ -11,5 +11,11 @@
   "Beer": "Bier",
   "Bear": "Beer",
   "Question": "Vraag",
+  "Name": "Naam",
+  "Record": "Neem Op",
+  "Stop Recording": "Stop opname",
+  "Select the corresponding item": "Selecteer het overeenkomstige voorwerp",
+  "Record and submit your answer": "Neem je antwoord op en stuur het door",
+  "Play Question": "Luister naar de vraag",
   "Submit": "Verstuur"
 }
