@@ -26,7 +26,12 @@ export class HomePage {
 
     this.name = "Patient"
     this.translate = translate;
-    this.translate.setDefaultLang('nl');
+    var userlang = navigator.language.split('-')[0];
+    if(userlang != "nl") {
+      userlang = "en";
+    }
+    this.translate.setDefaultLang(userlang);
+    this.translate.use(userlang);
 
   }
 

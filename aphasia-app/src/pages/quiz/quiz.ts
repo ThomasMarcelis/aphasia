@@ -29,9 +29,19 @@ export class QuizPage {
    public translate: TranslateService;
    public media: MediaPlugin;
    public recording: boolean;
+   public pickedOption: boolean;
 
 
   constructor(public platform: Platform, public navCtrl: NavController, public quizAssigner: QuizAssigner, public navParams: NavParams, private questionAssigner: QuestionAssigner, translate: TranslateService) {
+    this.translate = translate;
+    var userlang = navigator.language.split('-')[0];
+    if(userlang != "nl") {
+      userlang = "en";
+    }
+    this.translate.setDefaultLang(userlang);
+    this.translate.use(userlang);
+
+    this.pickedOption = true;
 
     platform.registerBackButtonAction(() => {
 
@@ -40,10 +50,9 @@ export class QuizPage {
 
 
     this.recording = false;
-    this.translate = translate;
-    this.translate.setDefaultLang('nl');
     console.error(this.navParams.get('quiz'));
     this.quiz = this.navParams.get('quiz');
+
 
     this.question = new Question(0,'','','','','');
     this.choice = "";
@@ -70,25 +79,41 @@ export class QuizPage {
     this.answerType = types[1];
     if(this.questionType == "speech") {
       this.playQuestion();
+    } else {
+      this.choice = this.question.answer1;
     }
     if(this.answerType == "speech") {
       this.media = new MediaPlugin(this.quiz.id + '-' + this.question.id + '.wav');
+          this.pickedOption = false;
     }
   }
 
   playQuestion() {
 
-    TextToSpeech.speak(
-      {
-        text: this.question.title,
-        locale: 'en-GB',
-        rate: 1
-      }
+    var userlang = navigator.language.split('-')[0];
+    if(userlang == "nl") {
+      userlang = "de-DE";
+    } else {
+      userlang = "en-GB"
+    }
+
+    this.translate.get(this.question.title).subscribe( (translatedTitle) => {
+      TextToSpeech.speak(
+          {
+            text: translatedTitle,
+            locale: userlang,
+            rate: 1
+          }
+        )
+    }
     )
+
+    
 
   }
 
   submitAnswer() {
+    this.pickedOption = false;
     if(this.answerType == "speech") {
 
       this.quizAssigner.sendSpeechAnswer(this.quiz.id, this.question.id, this.quiz.id + '-' + this.question.id + '.wav');
@@ -115,6 +140,8 @@ export class QuizPage {
     }
 
     }
+
+    
    
   }
 
@@ -125,6 +152,7 @@ startRecording() {
 
 
 stopRecording() {
+  this.pickedOption = true;
   this.media.stopRecord();
   this.recording = false;
 }
