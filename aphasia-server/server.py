@@ -54,7 +54,16 @@ class Quiz:
         cursor = db.execute(
             "SELECT * FROM question WHERE id NOT IN ( SELECT questionId FROM question  JOIN answer ON answer.questionId = question.id WHERE quizId=" + str(self.quizId) + ");")
         chosen = random.choice(cursor.fetchall())
+        if chosen == None:
+            return None
         return Question(chosen["id"], chosen["title"], chosen["type"], chosen["answer1"], chosen["answer2"], chosen["answer3"])
+
+    def getNumberOfQuestionsAnswered(self):
+        db = get_db()
+        cursor = db.execute("SELECT COUNT(*) as count FROM answer WHERE quizId=" + str(self.quizId) + ";")
+        count = cursor.fetchone()["count"]
+        return count
+
 
 class Question:
     def __init__(self, questionId, title, qType, answer1, answer2, answer3):
@@ -114,6 +123,11 @@ def newQuiz():
 @app.route('/quiz/<int:quizId>/question/next', methods=['get'])
 def nextQuestion(quizId):
     quiz = Quiz.getQuiz(quizId)
+    if quiz.getNumberOfQuestionsAnswered() > 4:
+        return "answered 5 questions already!", 400
+    question = quiz.getNewQuestion()
+    if question == None:
+        return "Couldn't find you a question", 400
     return jsonify(**quiz.getNewQuestion().toJson())
 
 

@@ -15,7 +15,7 @@ import { Observable }     from 'rxjs/Observable';
 @Injectable()
 export class QuizAssigner {
 
-  private quizUrl = 'http://127.0.0.1:5000/quiz';
+  private quizUrl = 'http://192.73.239.55:5000/quiz';
   private questionUrl = '/question/';
 
   constructor(public http: Http) {}
