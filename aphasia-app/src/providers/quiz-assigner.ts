@@ -51,7 +51,7 @@ var ft = new Transfer();
 
 let postUrl = this.quizUrl + '/' + quizId + '/question/' + questionId + '/recording';
 
-ft.upload("/storage/sdcard/" + fileName, encodeURI(postUrl), options, true).then((data) => alert(data)).catch((data) => data)
+ft.upload("/storage/sdcard/" + fileName, encodeURI(postUrl), options, true).then((data) => data).catch((data) => data)
 }
 
 
