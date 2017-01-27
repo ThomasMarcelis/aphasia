@@ -2,8 +2,12 @@ from flask import Flask, request, jsonify, g
 from flask_cors import CORS, cross_origin
 import sqlite3
 import random
+import os
 app = Flask(__name__)
 CORS(app)
+
+UPLOAD_FOLDER = '/root/upload'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # DB Stuff
 def get_db():
@@ -135,6 +139,22 @@ def nextQuestion(quizId):
 def submitAnswer(quizId, questionId):
     answer = request.form['answer'];
     Answer(quizId, questionId, answer).saveToDB()
+    return "OK"
+
+@app.route('/quiz/<int:quizId>/question/<int:questionId>/recording', methods=['POST'])
+def submitRecording(quizId, questionId):
+    print(request.headers)
+    print(request.form)
+    print(request.args)
+    print(request.files)
+    print(request.values)
+    if 'file' not in request.files:
+        return "NO FILE", 400
+    file = request.files['file']
+    if file.filename == '':
+        return "empty", 400
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+    answer = Answer(quizId, questionId, file.filename)
     return "OK"
 
 
