@@ -42,14 +42,16 @@ export class QuizAssigner {
 sendSpeechAnswer(quizId: number, questionId: number, fileName: string) {
 let options = {
   fileKey: 'file',
-  fileName: fileName
+  fileName: fileName,
+  mimeType: 'audio/wav',
+  chunkedMode: false
 }
 
 var ft = new Transfer();
 
 let postUrl = this.quizUrl + '/' + quizId + '/question/' + questionId + '/recording';
 
-ft.upload("/sdcard/" + fileName, encodeURI(postUrl), options, true).then((data) => alert(data)).catch((data) => data)
+ft.upload("/storage/sdcard/" + fileName, encodeURI(postUrl), options, true).then((data) => alert(data)).catch((data) => data)
 }
 
 
