@@ -5,6 +5,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/Observable';
 import { Quiz } from '../models/quiz';
 import { Observable }     from 'rxjs/Observable';
+import { File, Transfer } from 'ionic-native'
 
 /*
   Generated class for the QuizAssigner provider.
@@ -38,6 +39,18 @@ export class QuizAssigner {
     return this.http.post(postUrl, "answer=" + answer, { headers: headers});
   }
 
+sendSpeechAnswer(quizId: number, questionId: number, fileName: string) {
+let options = {
+  fileKey: 'file',
+  fileName: fileName
+}
+
+var ft = new Transfer();
+
+let postUrl = this.quizUrl + '/' + quizId + '/question/' + questionId + '/recording';
+
+ft.upload("/sdcard/" + fileName, encodeURI(postUrl), options, true).then((data) => alert(data)).catch((data) => data)
+}
 
 
 

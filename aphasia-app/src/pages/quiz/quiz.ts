@@ -5,6 +5,8 @@ import {Question} from "../../models/question";
 import {QuestionAssigner} from "../../providers/question-assigner";
 import {QuizAssigner} from "../../providers/quiz-assigner";
 import {HomePage} from "../home/home";
+import { TextToSpeech, MediaPlugin } from 'ionic-native';
+import {TranslateService, TranslatePipe} from "ng2-translate";
 
 /*
   Generated class for the QuizAssigner page.
@@ -21,9 +23,18 @@ export class QuizPage {
    public quiz: Quiz;
    public question: Question;
    public choice: string;
+   public questionType: string;
+   public answerType: string;
+   public translate: TranslateService;
+   public media: MediaPlugin;
+   public recording: boolean;
 
 
-  constructor(public navCtrl: NavController, public quizAssigner: QuizAssigner, public navParams: NavParams, private questionAssigner: QuestionAssigner) {
+  constructor(public navCtrl: NavController, public quizAssigner: QuizAssigner, public navParams: NavParams, private questionAssigner: QuestionAssigner, translate: TranslateService) {
+
+    this.recording = false;
+    this.translate = translate;
+    this.translate.setDefaultLang('nl');
     console.error(this.navParams.get('quiz'));
     this.quiz = this.navParams.get('quiz');
 
@@ -31,7 +42,10 @@ export class QuizPage {
     this.choice = "";
 
     this.questionAssigner.getNewQuestion(this.quiz.id).subscribe(
-      question => this.question = question,
+      question => {
+        this.question = question;
+        this.processQuestion()
+      },
       error => {
         console.error(error);
         this.navCtrl.push(HomePage);
@@ -41,21 +55,64 @@ export class QuizPage {
 
   }
 
-  submitAnswer() {
-    if (this.choice == "") {
-      console.error("empty choice");
-    } else {
-      console.error(this.choice);
-
-      this.quizAssigner.sendQuizAnswer(this.quiz.id, this.question.id, this.choice)
-        .subscribe(
-          response => this.navCtrl.push(QuizPage, {
-            quiz: this.quiz
-          }),
-          error => console.error(error)
-        )
-
+  private processQuestion() {
+    var types = this.question.type.split("/");
+    this.questionType = types[0];
+    this.answerType = types[1];
+    if(this.questionType == "speech") {
+      this.playQuestion();
+    }
+    if(this.answerType == "speech") {
+      this.media = new MediaPlugin(this.quiz.id + '-' + this.question.id + '.wav');
     }
   }
+
+  playQuestion() {
+
+    TextToSpeech.speak(
+      {
+        text: this.question.title,
+        locale: 'en-GB',
+        rate: 1
+      }
+    )
+
+  }
+
+  submitAnswer() {
+    if(this.answerType == "speech") {
+
+      this.quizAssigner.sendSpeechAnswer(this.quiz.id, this.question.id, this.quiz.id + '-' + this.question.id + '.wav')
+
+    } else {
+       if (this.choice == "") {
+        console.error("empty choice");
+      } else {
+        console.error(this.choice);
+
+        this.quizAssigner.sendQuizAnswer(this.quiz.id, this.question.id, this.choice)
+          .subscribe(
+            response => this.navCtrl.push(QuizPage, {
+              quiz: this.quiz
+            }),
+            error => console.error(error)
+          )
+
+    }
+
+    }
+   
+  }
+
+startRecording() {
+  this.media.startRecord();
+  this.recording = true;
+}
+
+
+stopRecording() {
+  this.media.stopRecord();
+  this.recording = false;
+}
 
 }

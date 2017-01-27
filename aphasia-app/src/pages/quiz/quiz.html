@@ -6,7 +6,7 @@
 -->
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar hideBackButton="true">
     <ion-title>quiz</ion-title>
   </ion-navbar>
 
@@ -17,30 +17,58 @@
 
   <h1>quiz: {{ quiz.id }}</h1>
 
-  <h2>Question: {{ question.title }}</h2>
+
+  <h2 [hidden]='questionType!="text"'> Question: {{ question.title | translate }}</h2>
+  <h2 [hidden]='questionType!="image"'> Question: <img src="{{ question.title }}" width="300"></h2>
+  <h2 [hidden]='questionType!="speech"'> Question: <button (click)="playQuestion()">Play Question</button></h2>
   <p>Question type: {{ question.type }}</p>
 
 
 
-  <ion-list [(ngModel)]="choice" radio-group>
+  <ion-list [hidden]='answerType!="text"' [(ngModel)]="choice" radio-group>
 
     <ion-item>
-      <ion-label>{{question.answer1}}</ion-label>
+      <ion-label>{{question.answer1 | translate}} </ion-label>
       <ion-radio value="{{question.answer1}}">test</ion-radio>
     </ion-item>
 
     <ion-item>
-      <ion-label>{{question.answer2}}</ion-label>
+      <ion-label>{{question.answer2 | translate}}</ion-label>
       <ion-radio value="{{question.answer2}}"></ion-radio>
     </ion-item>
 
     <ion-item>
-      <ion-label>{{question.answer3}}</ion-label>
+      <ion-label>{{question.answer3 | translate}}</ion-label>
       <ion-radio value="{{question.answer3}}"></ion-radio>
     </ion-item>
 
 
   </ion-list>
+
+    <ion-list [hidden]='answerType!="image"' [(ngModel)]="choice" radio-group>
+
+    <ion-item>
+      <ion-label><img src="{{ question.answer1 }}" height="250"></ion-label>
+      <ion-radio value="{{question.answer1}}"></ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label><img src="{{ question.answer2 }}" height="250"></ion-label>
+      <ion-radio value="{{question.answer2}}"></ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label><img src="{{ question.answer3 }}" height="250"></ion-label>
+      <ion-radio value="{{question.answer3}}"></ion-radio>
+    </ion-item>
+
+
+  </ion-list>
+
+  <div [hidden]='answerType!="speech"'>
+    <button [hidden]='recording' (click)="startRecording()"> Record </button>
+      <button [hidden]='!recording' (click)="stopRecording()"> Stop Recording </button>
+    </div>
 
     <button ion-button large round (click)="submitAnswer()">Submit</button>
 
