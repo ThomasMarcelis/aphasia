@@ -7,6 +7,7 @@ import {QuizAssigner} from "../../providers/quiz-assigner";
 import {HomePage} from "../home/home";
 import { TextToSpeech, MediaPlugin } from 'ionic-native';
 import {TranslateService, TranslatePipe} from "ng2-translate";
+import { Platform } from 'ionic-angular';
 
 /*
   Generated class for the QuizAssigner page.
@@ -30,7 +31,13 @@ export class QuizPage {
    public recording: boolean;
 
 
-  constructor(public navCtrl: NavController, public quizAssigner: QuizAssigner, public navParams: NavParams, private questionAssigner: QuestionAssigner, translate: TranslateService) {
+  constructor(public platform: Platform, public navCtrl: NavController, public quizAssigner: QuizAssigner, public navParams: NavParams, private questionAssigner: QuestionAssigner, translate: TranslateService) {
+
+    platform.registerBackButtonAction(() => {
+
+      this.navCtrl.push(HomePage)
+    }, 100);
+
 
     this.recording = false;
     this.translate = translate;
@@ -51,6 +58,8 @@ export class QuizPage {
         this.navCtrl.push(HomePage);
       }
     )
+
+
 
 
   }
@@ -82,7 +91,12 @@ export class QuizPage {
   submitAnswer() {
     if(this.answerType == "speech") {
 
-      this.quizAssigner.sendSpeechAnswer(this.quiz.id, this.question.id, this.quiz.id + '-' + this.question.id + '.wav')
+      this.quizAssigner.sendSpeechAnswer(this.quiz.id, this.question.id, this.quiz.id + '-' + this.question.id + '.wav');
+  
+      this.navCtrl.push(QuizPage, {
+            quiz: this.quiz
+          });
+
 
     } else {
        if (this.choice == "") {

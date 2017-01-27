@@ -1,9 +1,13 @@
 <ion-header>
   <ion-navbar hideBackButton="true">
-    <ion-title>Home</ion-title>
+    <ion-title>Aphasia Quiz - Start</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
+  <ion-item>
+  <ion-label>Name</ion-label>
+  <ion-input type="text" [(ngModel)]="name" name="name"></ion-input>
+</ion-item>
   <button ion-button round large (click)="startQuiz()">Start Quiz</button>
 </ion-content>

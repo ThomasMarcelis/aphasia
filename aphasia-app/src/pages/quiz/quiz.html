@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar hideBackButton="true">
-    <ion-title>quiz</ion-title>
+    <ion-title>Aphasia Quiz - {{ quiz.name }}</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -15,13 +15,12 @@
 
 <ion-content padding>
 
-  <h1>quiz: {{ quiz.id }}</h1>
+  <h1>quiz: {{ quiz.name }}</h1>
 
 
   <h2 [hidden]='questionType!="text"'> Question: {{ question.title | translate }}</h2>
   <h2 [hidden]='questionType!="image"'> Question: <img src="{{ question.title }}" width="300"></h2>
   <h2 [hidden]='questionType!="speech"'> Question: <button (click)="playQuestion()">Play Question</button></h2>
-  <p>Question type: {{ question.type }}</p>
 
 
 
