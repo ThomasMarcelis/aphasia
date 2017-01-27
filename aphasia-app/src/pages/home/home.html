@@ -6,7 +6,7 @@
 
 <ion-content padding>
   <ion-item>
-  <ion-label>Name</ion-label>
+  <ion-label>{{ "Name" | translate }}</ion-label>
   <ion-input type="text" [(ngModel)]="name" name="name"></ion-input>
 </ion-item>
   <button ion-button round large (click)="startQuiz()">Start Quiz</button>

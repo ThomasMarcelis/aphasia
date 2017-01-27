@@ -15,12 +15,12 @@
 
 <ion-content padding>
 
-  <h1>quiz: {{ quiz.name }}</h1>
+  <h3 [hidden]='answerType!="speech"' >{{ "Select the corresponding item" | translate }}</h3>
+  <h3 [hidden]='answerType=="speech"' >{{ "Record and submit your answer: | translate }}</h3>
 
-
-  <h2 [hidden]='questionType!="text"'> Question: {{ question.title | translate }}</h2>
-  <h2 [hidden]='questionType!="image"'> Question: <img src="{{ question.title }}" width="300"></h2>
-  <h2 [hidden]='questionType!="speech"'> Question: <button (click)="playQuestion()">Play Question</button></h2>
+  <h2 [hidden]='questionType!="text"'> {{ question.title | translate }}</h2>
+  <h2 [hidden]='questionType!="image"'>  <img src="{{ question.title }}" width="300"></h2>
+  <h2 [hidden]='questionType!="speech"'> <button (click)="playQuestion()">{{ "Play Question" | translate }}</button></h2>
 
 
 
@@ -65,10 +65,10 @@
   </ion-list>
 
   <div [hidden]='answerType!="speech"'>
-    <button [hidden]='recording' (click)="startRecording()"> Record </button>
-      <button [hidden]='!recording' (click)="stopRecording()"> Stop Recording </button>
+    <button [hidden]='recording' (click)="startRecording()">{{ "Record" | translate }}</button>
+      <button [hidden]='!recording' (click)="stopRecording()">{{ "Stop Recording" | translate }}</button>
     </div>
 
-    <button ion-button large round (click)="submitAnswer()">Submit</button>
+    <button ion-button large round (click)="submitAnswer()">{{ "Submit" | translate }}</button>
 
 </ion-content>
