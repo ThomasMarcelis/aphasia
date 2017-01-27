@@ -5,29 +5,34 @@ import { QuizPage } from '../quiz/quiz';
 import { QuizAssigner } from '../../providers/quiz-assigner';
 import { TextToSpeech } from 'ionic-native';
 import {Quiz} from "../../models/quiz";
+import {TranslateService, TranslatePipe} from "ng2-translate";
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
-  providers: [ QuizAssigner ]
+  providers: [ QuizAssigner, TranslateService],
 })
 export class HomePage {
-  constructor(public navCtrl: NavController, private quizAssigner: QuizAssigner) {
+  private translate: TranslateService;
 
+  constructor(public navCtrl: NavController, private quizAssigner: QuizAssigner, translate: TranslateService) {
+
+    this.translate = translate;
+    this.translate.setDefaultLang('nl');
 
   }
 
 
+
   startQuiz() {
 
-    TextToSpeech.speak(
-      {
-        text: 'Hello, World',
-        locale: 'en-GB',
-        rate: 1.5
+/*    this.translate.get('QUESTION').subscribe(
+      value => {
+        // value is our translated string
+        let alertTitle = value;
+        alert(value)
       }
-    )
-      .then(() => alert("gesproken"));
+    );*/
 
     this.quizAssigner.getNewQuiz("default").subscribe(
       quiz => this.navCtrl.push(QuizPage, {
