@@ -1,6 +1,3 @@
-/**
- * Created by thomas on 26.01.17.
- */
 export class Question {
   constructor(
     public id: number,

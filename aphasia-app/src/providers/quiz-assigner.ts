@@ -1,23 +1,21 @@
 import { Injectable } from '@angular/core';
-import {Http, Response, Headers} from '@angular/http';
+import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/Observable';
 import { Quiz } from '../models/quiz';
 import { Observable }     from 'rxjs/Observable';
-import { File, Transfer } from 'ionic-native'
+import { Transfer } from 'ionic-native'
+import { Question } from '../models/question';
 
-/*
-  Generated class for the QuizAssigner provider.
 
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
 @Injectable()
 export class QuizAssigner {
 
-  private quizUrl = 'http://192.73.239.55:5000/quiz';
-  private questionUrl = '/question/';
+  //FIXME: This should probably be an environment variable
+  private quizUrl = 'http://127.0.0.1:5000/quiz';
+
+  //FIXME: Make hardcoded URL's configurable
 
   constructor(public http: Http) {}
 
@@ -39,21 +37,25 @@ export class QuizAssigner {
     return this.http.post(postUrl, "answer=" + answer, { headers: headers});
   }
 
-sendSpeechAnswer(quizId: number, questionId: number, fileName: string) {
-let options = {
-  fileKey: 'file',
-  fileName: fileName,
-  mimeType: 'audio/wav',
-  chunkedMode: false
-}
+  sendSpeechAnswer(quizId: number, questionId: number, fileName: string) {
+    let options = {
+      fileKey: 'file',
+      fileName: fileName,
+      mimeType: 'audio/wav',
+      chunkedMode: false
+    }
 
-var ft = new Transfer();
+    var ft = new Transfer();
 
-let postUrl = this.quizUrl + '/' + quizId + '/question/' + questionId + '/recording';
+    let postUrl = this.quizUrl + '/' + quizId + '/question/' + questionId + '/recording';
 
-ft.upload("/storage/sdcard/" + fileName, encodeURI(postUrl), options, true).then((data) => data).catch((data) => data)
-}
+    ft.upload("/storage/sdcard/" + fileName, encodeURI(postUrl), options, true).then((data) => data).catch((data) => console.error(data))
+  }
 
+  getNewQuestion(quizId: number): Observable<Question> {
+    return this.http.get(this.quizUrl + '/' + quizId + '/question/next')
+      .map(response => <Question>response.json()["question"]);
+  }
 
 
 }

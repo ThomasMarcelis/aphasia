@@ -2,23 +2,17 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import {Quiz} from "../../models/quiz";
 import {Question} from "../../models/question";
-import {QuestionAssigner} from "../../providers/question-assigner";
 import {QuizAssigner} from "../../providers/quiz-assigner";
 import {HomePage} from "../home/home";
 import { TextToSpeech, MediaPlugin } from 'ionic-native';
 import {TranslateService, TranslatePipe} from "ng2-translate";
 import { Platform } from 'ionic-angular';
 
-/*
-  Generated class for the QuizAssigner page.
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-quiz',
   templateUrl: 'quiz.html',
-  providers: [ QuestionAssigner, QuizAssigner ]
+  providers: [ QuizAssigner ]
 })
 export class QuizPage {
    public quiz: Quiz;
@@ -32,84 +26,69 @@ export class QuizPage {
    public pickedOption: boolean;
 
 
-  constructor(public platform: Platform, public navCtrl: NavController, public quizAssigner: QuizAssigner, public navParams: NavParams, private questionAssigner: QuestionAssigner, translate: TranslateService) {
+  constructor(public platform: Platform, public navCtrl: NavController, public quizAssigner: QuizAssigner, public navParams: NavParams, translate: TranslateService) {
     this.translate = translate;
-    var userlang = navigator.language.split('-')[0];
-    if(userlang != "nl") {
-      userlang = "en";
-    }
-    this.translate.setDefaultLang(userlang);
-    this.translate.use(userlang);
-
-    this.pickedOption = true;
+    this.setLanguage();
 
     platform.registerBackButtonAction(() => {
-
       this.navCtrl.push(HomePage)
     }, 100);
 
+    this.pickedOption = true; // Tracks if user has selected an answer (by default we select answer 1)
+    this.recording = false; // Tracks if there is an active recording
 
-    this.recording = false;
-    console.error(this.navParams.get('quiz'));
     this.quiz = this.navParams.get('quiz');
 
-
-    this.question = new Question(0,'','','','','');
+    this.question = new Question(0,'Fetching Question...','','','',''); // Placeholder while fetching
     this.choice = "";
 
-    this.questionAssigner.getNewQuestion(this.quiz.id).subscribe(
+    this.quizAssigner.getNewQuestion(this.quiz.id).subscribe(
       question => {
         this.question = question;
-        this.processQuestion()
+        this.processQuestion();
       },
       error => {
         console.error(error);
         this.navCtrl.push(HomePage);
       }
     )
-
-
-
-
   }
 
   private processQuestion() {
     var types = this.question.type.split("/");
     this.questionType = types[0];
     this.answerType = types[1];
+    
     if(this.questionType == "speech") {
       this.playQuestion();
-    } else {
-      this.choice = this.question.answer1;
-    }
+    } 
+
     if(this.answerType == "speech") {
       this.media = new MediaPlugin(this.quiz.id + '-' + this.question.id + '.wav');
-          this.pickedOption = false;
+      //Speech does not have a default selection
+      this.pickedOption = false;
+    } else {
+      //But all other questions do
+      this.choice = this.question.answer1;
     }
   }
 
   playQuestion() {
-
     var userlang = navigator.language.split('-')[0];
     if(userlang == "nl") {
+      //FIXME: Android does not support Dutch speech?
       userlang = "de-DE";
     } else {
       userlang = "en-GB"
     }
 
     this.translate.get(this.question.title).subscribe( (translatedTitle) => {
-      TextToSpeech.speak(
-          {
+      TextToSpeech.speak({
             text: translatedTitle,
             locale: userlang,
             rate: 1
-          }
-        )
-    }
-    )
-
-    
-
+          })
+    })
   }
 
   submitAnswer() {
@@ -136,13 +115,8 @@ export class QuizPage {
             }),
             error => console.error(error)
           )
-
+      }
     }
-
-    }
-
-    
-   
   }
 
 startRecording() {
@@ -150,11 +124,19 @@ startRecording() {
   this.recording = true;
 }
 
-
 stopRecording() {
   this.pickedOption = true;
   this.media.stopRecord();
   this.recording = false;
+}
+
+private setLanguage() {
+  var userlang = navigator.language.split('-')[0];
+      if(userlang != "nl") {
+        userlang = "nl";
+      }
+      this.translate.setDefaultLang(userlang);
+      this.translate.use(userlang);
 }
 
 }
