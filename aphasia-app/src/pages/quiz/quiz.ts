@@ -95,7 +95,7 @@ export class QuizPage {
 
     } else {
        if (this.choice == "") {
-        console.error("empty choice");
+        console.error("You have not selected an answer. Have you forgot to record a voice answer?");
       } else {
         console.error(this.choice);
 
