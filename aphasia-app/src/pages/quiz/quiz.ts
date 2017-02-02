@@ -42,16 +42,9 @@ export class QuizPage {
     this.question = new Question(0,'Fetching Question...','','','',''); // Placeholder while fetching
     this.choice = "";
 
-    this.quizAssigner.getNewQuestion(this.quiz.id).subscribe(
-      question => {
-        this.question = question;
-        this.processQuestion();
-      },
-      error => {
-        console.error(error);
-        this.navCtrl.push(HomePage);
-      }
-    )
+    
+    
+    this.getNewQuestion();
   }
 
   private processQuestion() {
@@ -97,9 +90,7 @@ export class QuizPage {
 
       this.quizAssigner.sendSpeechAnswer(this.quiz.id, this.question.id, this.quiz.id + '-' + this.question.id + '.wav');
   
-      this.navCtrl.push(QuizPage, {
-            quiz: this.quiz
-          });
+      this.getNewQuestion();
 
 
     } else {
@@ -108,13 +99,7 @@ export class QuizPage {
       } else {
         console.error(this.choice);
 
-        this.quizAssigner.sendQuizAnswer(this.quiz.id, this.question.id, this.choice)
-          .subscribe(
-            response => this.navCtrl.push(QuizPage, {
-              quiz: this.quiz
-            }),
-            error => console.error(error)
-          )
+       this.getNewQuestion();
       }
     }
   }
@@ -138,5 +123,17 @@ private setLanguage() {
       this.translate.setDefaultLang(userlang);
       this.translate.use(userlang);
 }
+  
+  private getNewQuestion() {
+    this.quizAssigner.getNewQuestion(this.quiz.id).subscribe(
+      question => {
+        this.question = question;
+        this.processQuestion();
+      },
+      error => {
+        console.error(error);
+        this.navCtrl.push(HomePage);
+      } 
+  }
 
 }
