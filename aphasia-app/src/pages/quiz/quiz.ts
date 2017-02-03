@@ -104,27 +104,28 @@ export class QuizPage {
     }
   }
 
-startRecording() {
-  this.media.startRecord();
-  this.recording = true;
-}
+  startRecording() {
+    this.media.startRecord();
+    this.recording = true;
+  }
 
-stopRecording() {
-  this.pickedOption = true;
-  this.media.stopRecord();
-  this.recording = false;
-}
+  stopRecording() {
+    this.pickedOption = true;
+    this.media.stopRecord();
+    this.recording = false;
+  }
 
-private setLanguage() {
-  var userlang = navigator.language.split('-')[0];
-      if(userlang != "nl") {
-        userlang = "nl";
-      }
-      this.translate.setDefaultLang(userlang);
-      this.translate.use(userlang);
-}
+  private setLanguage() {
+    var userlang = navigator.language.split('-')[0];
+        if(userlang != "nl") {
+          userlang = "nl";
+        }
+        this.translate.setDefaultLang(userlang);
+        this.translate.use(userlang);
+  }
   
   private getNewQuestion() {
+
     this.quizAssigner.getNewQuestion(this.quiz.id).subscribe(
       question => {
         this.question = question;
@@ -133,7 +134,7 @@ private setLanguage() {
       error => {
         console.error(error);
         this.navCtrl.push(HomePage);
-      } 
+      })
   }
 
 }
