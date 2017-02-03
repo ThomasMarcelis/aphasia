@@ -81,10 +81,11 @@ export class QuizPage {
   }
 
   submitAnswer() {
-    this.pickedOption = false;
     if(this.answerType == "speech") {
 
-      this.quizAssigner.sendSpeechAnswer(this.quiz.id, this.question.id, this.quiz.id + '-' + this.question.id + '.wav');
+      if(!this.platform.is('core')) {
+        this.quizAssigner.sendSpeechAnswer(this.quiz.id, this.question.id, this.quiz.id + '-' + this.question.id + '.wav');
+      }
   
       this.getNewQuestion();
 
@@ -93,21 +94,28 @@ export class QuizPage {
        if (this.choice == "") {
         console.error("You have not selected an answer. Have you forgot to record a voice answer?");
       } else {
-        console.error(this.choice);
+        this.quizAssigner.sendQuizAnswer(this.quiz.id, this.question.id, this.choice).subscribe(
+          response => this.getNewQuestion(),
+          error => console.error(error)
+        )
 
-       this.getNewQuestion();
       }
     }
   }
 
   startRecording() {
-    this.media.startRecord();
+
+    if(!this.platform.is('core')) {
+      this.media.startRecord();
+    } 
     this.recording = true;
   }
 
   stopRecording() {
     this.pickedOption = true;
-    this.media.stopRecord();
+    if(!this.platform.is('core')) {
+      this.media.stopRecord();
+    }
     this.recording = false;
   }
 
