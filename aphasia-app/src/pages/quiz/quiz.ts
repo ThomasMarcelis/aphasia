@@ -34,15 +34,11 @@ export class QuizPage {
       this.navCtrl.push(HomePage)
     }, 100);
 
-    this.pickedOption = true; // Tracks if user has selected an answer (by default we select answer 1)
-    this.recording = false; // Tracks if there is an active recording
+    this.resetState();
 
     this.quiz = this.navParams.get('quiz');
 
     this.question = new Question(0,'Fetching Question...','','','',''); // Placeholder while fetching
-    this.choice = "";
-
-    
     
     this.getNewQuestion();
   }
@@ -125,6 +121,8 @@ export class QuizPage {
   }
   
   private getNewQuestion() {
+    this.pickedOption = true; // Tracks if user has selected an answer (by default we select answer 1)
+    this.recording = false; // Tracks if there is an active recording
 
     this.quizAssigner.getNewQuestion(this.quiz.id).subscribe(
       question => {
@@ -135,6 +133,14 @@ export class QuizPage {
         console.error(error);
         this.navCtrl.push(HomePage);
       })
+  }
+
+  private resetState() {
+
+    this.choice = "";
+    this.pickedOption = true; // Tracks if user has selected an answer (by default we select answer 1)
+    this.recording = false; // Tracks if there is an active recording
+
   }
 
 }
